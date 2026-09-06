@@ -17,3 +17,4 @@ attachments
 coverage
 .cache
 public/__grok
+dist/

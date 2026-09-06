@@ -396,7 +396,7 @@ export function GameApp() {
             {hud.mode === "title" || hud.mode === "boot" ? (
               <>
                 <img
-                  src={`${import.meta.env.BASE_URL}game/menu-poster.jpg`}
+                  src={`${import.meta.env.BASE_URL}game/menu-poster.jpg?v=2`}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover object-center"
                 />

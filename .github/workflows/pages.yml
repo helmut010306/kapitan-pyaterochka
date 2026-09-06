@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
+      - run: npm install
       - run: PAGES=1 npx vite build
       - name: SPA fallback
         run: |

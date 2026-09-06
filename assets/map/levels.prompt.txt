@@ -1,0 +1,12 @@
+Ten vertical 9:16 photoreal nadir aerial warehouse maps for Captain Pyaterochka, matching the user warehouse photo (camera height, asphalt, rooftops, satellite look). No sky, no labels, no watermarks. Cropped 8% bottom.
+
+01-yard — classic Pyaterochka yard, parking, grass, red roof
+02-docks — truck loading bays
+03-cold — white cold-storage roofs and trailers
+04-night — night sodium-lit logistics yard
+05-containers — shipping container stacks
+06-fleet — truck fleet parking
+07-build — DC construction site
+08-rail — freight railway siding
+09-roof — HVAC / solar warehouse rooftop
+10-hub — flagship logistics campus, boss arena

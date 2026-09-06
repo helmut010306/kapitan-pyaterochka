@@ -203,7 +203,11 @@ export function GameApp() {
         ) : null}
 
         {menu ? (
-          <div className="absolute inset-0 z-20 flex flex-col bg-bg/85 px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+          <div
+            className={`absolute inset-0 z-20 flex flex-col overflow-hidden px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))] ${
+              hud.mode === "title" || hud.mode === "boot" ? "" : "bg-bg/85"
+            }`}
+          >
             {hud.mode === "paused" ? (
               <div className="m-auto w-full rounded-[28px] bg-surface p-6">
                 <h2 className="font-display text-2xl font-semibold">Пауза</h2>
@@ -390,59 +394,55 @@ export function GameApp() {
             ) : null}
 
             {hud.mode === "title" || hud.mode === "boot" ? (
-              <div className="flex h-full flex-col">
-                <div className="flex items-center gap-2">
-                  <LogoMark className="size-10" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted">
-                      Пятёрочка не сдаётся
+              <>
+                <img
+                  src={`${import.meta.env.BASE_URL}game/menu-poster.jpg`}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover object-center"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/85" />
+                <div className="relative flex h-full flex-col">
+                  <div className="flex items-center gap-2">
+                    <LogoMark className="size-10 drop-shadow-lg" />
+                    <div className="min-w-0 flex-1" />
+                    <ApelsinChip value={hud.bank} />
+                  </div>
+                  <div className="flex-1" />
+                  <div className="space-y-3">
+                    <p className="text-sm leading-relaxed text-white/80">
+                      {tgName ? `${tgName}, ` : null}
+                      10 складов, на каждом несколько волн и босс. За дронов капают баллы карты Апельсин.
                     </p>
-                    <h1 className="font-display text-xl font-semibold leading-tight">Капитан Пятёрочка</h1>
-                  </div>
-                  <ApelsinChip value={hud.bank} />
-                </div>
-                <div className="relative mx-auto mt-3 w-full flex-1 overflow-hidden rounded-[28px]">
-                  <img
-                    src={`${import.meta.env.BASE_URL}game/captain-portrait.jpg`}
-                    alt="Капитан Пятёрочка"
-                    className="h-full w-full object-cover object-top"
-                  />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-bg via-bg/85 to-transparent" />
-                </div>
-                <div className="mt-3 space-y-3">
-                  <p className="text-sm leading-relaxed text-muted">
-                    {tgName ? `${tgName}, ` : null}
-                    10 складов, на каждом несколько волн и босс. За дронов капают баллы карты Апельсин.
-                  </p>
-                  <p className="text-xs text-faint">Рекорд: {hud.best} · WASD / стрелки · Пробел — бомба</p>
-                  <button
-                    type="button"
-                    disabled={!hud.ready}
-                    className="flex h-12 w-full items-center justify-center rounded-2xl bg-primary font-display text-sm font-semibold tracking-wide text-primary-fg disabled:opacity-50"
-                    onClick={() => g?.play()}
-                  >
-                    {hud.ready ? "В БОЙ" : "ЗАГРУЗКА СКЛАДА"}
-                  </button>
-                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-white/50">Рекорд: {hud.best} · WASD / стрелки · Пробел — бомба</p>
                     <button
                       type="button"
-                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted"
-                      onClick={() => g?.openShop()}
+                      disabled={!hud.ready}
+                      className="flex h-12 w-full items-center justify-center rounded-2xl bg-primary font-display text-sm font-semibold tracking-wide text-primary-fg disabled:opacity-50"
+                      onClick={() => g?.play()}
                     >
-                      <Shirt className="size-4" />
-                      Ангар
+                      {hud.ready ? "В БОЙ" : "ЗАГРУЗКА СКЛАДА"}
                     </button>
-                    <button
-                      type="button"
-                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted"
-                      onClick={() => g?.toggleMute()}
-                    >
-                      {hud.muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-                      {hud.muted ? "Звук выкл" : "Звук вкл"}
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-white/70"
+                        onClick={() => g?.openShop()}
+                      >
+                        <Shirt className="size-4" />
+                        Ангар
+                      </button>
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-white/70"
+                        onClick={() => g?.toggleMute()}
+                      >
+                        {hud.muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                        {hud.muted ? "Звук выкл" : "Звук вкл"}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             ) : null}
           </div>
         ) : null}

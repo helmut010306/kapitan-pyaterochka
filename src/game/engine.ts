@@ -1124,6 +1124,22 @@ export class Game {
     frame: number,
     assets: Assets | null,
   ) {
+    if (b.kind === "laser" || b.kind === "scatter") {
+      const sp = Math.hypot(b.vx, b.vy) || 1;
+      const ux = b.vx / sp;
+      const uy = b.vy / sp;
+      const player = b.friendly;
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      for (let i = 1; i <= 5; i++) {
+        const t = i * 16;
+        ctx.beginPath();
+        ctx.ellipse(b.x - ux * t, b.y - uy * t, player ? 5 : 4, player ? 14 : 10, b.rot, 0, Math.PI * 2);
+        ctx.fillStyle = player ? `rgba(60,230,255,${0.42 - i * 0.07})` : `rgba(255,60,80,${0.38 - i * 0.06})`;
+        ctx.fill();
+      }
+      ctx.restore();
+    }
     ctx.save();
     ctx.translate(b.x, b.y);
     ctx.rotate(b.rot);
@@ -1135,26 +1151,30 @@ export class Game {
 
     if (b.kind === "laser" || b.kind === "scatter") {
       const player = b.friendly;
-      const h = player ? 48 : 36;
-      const w = player ? 10 : 8;
-      ctx.fillStyle = "rgba(0,0,0,0.62)";
-      bolt(w + 8, h + 12);
+      const h = player ? 62 : 44;
+      const w = player ? 16 : 12;
+      const glow = player ? "rgba(40,220,255," : "rgba(255,50,70,";
+      ctx.fillStyle = "rgba(0,0,0,0.85)";
+      bolt(w + 12, h + 16);
+      ctx.fill();
+      ctx.fillStyle = player ? "#062430" : "#2a060c";
+      bolt(w + 8, h + 8);
       ctx.fill();
       ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = player ? "rgba(255,140,20,0.45)" : "rgba(255,40,70,0.5)";
-      bolt(w + 10, h * 0.55);
+      ctx.fillStyle = glow + "0.28)";
+      bolt(w + 18, h * 0.7);
       ctx.fill();
-      ctx.fillStyle = player ? "rgba(255,210,70,0.85)" : "rgba(255,90,70,0.85)";
-      bolt(w + 3, h + 4);
+      ctx.fillStyle = glow + "0.55)";
+      bolt(w + 6, h + 20);
       ctx.fill();
-      ctx.fillStyle = player ? "#fff4c8" : "#ffd0a8";
+      ctx.fillStyle = player ? "#3cf0ff" : "#ff4d5e";
       bolt(w, h);
       ctx.fill();
-      ctx.fillStyle = "#ffffff";
-      bolt(w * 0.38, h * 0.78);
+      ctx.fillStyle = player ? "#e9ffff" : "#ffd4d8";
+      bolt(w * 0.52, h * 0.82);
       ctx.fill();
-      ctx.fillStyle = player ? "rgba(255,220,120,0.55)" : "rgba(255,80,90,0.45)";
-      bolt(w * 0.7, h * 1.55);
+      ctx.fillStyle = "#ffffff";
+      bolt(w * 0.22, h * 0.62);
       ctx.fill();
     } else if (b.kind === "rocket") {
       ctx.fillStyle = "rgba(0,0,0,0.5)";
@@ -1183,7 +1203,7 @@ export class Game {
       ctx.globalCompositeOperation = "source-over";
       if (assets?.bomb) drawSheet(ctx, assets.bomb, frame, 0, 0, 24, 24);
     } else {
-      const r = b.kind === "heavy" ? 11 : 8;
+      const r = b.kind === "heavy" ? 14 : 10;
       ctx.beginPath();
       ctx.arc(0, 0, r + 5, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(0,0,0,0.55)";

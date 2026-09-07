@@ -1,0 +1,1 @@
+import{t as e}from"./GameApp-uB6dXhlk.js";var t=e;export{t as component};

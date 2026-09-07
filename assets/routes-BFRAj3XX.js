@@ -1,0 +1,1 @@
+import{t as e}from"./GameApp-uB6dXhlk.js";import{n as t}from"./index-B27ppQdz.js";var n=t();function r(){return(0,n.jsx)(e,{})}export{r as component};

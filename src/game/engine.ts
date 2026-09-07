@@ -1118,112 +1118,6 @@ export class Game {
     f.t = 0;
     f.text = text;
   }
-  private drawShot(
-    ctx: CanvasRenderingContext2D,
-    b: Bullet,
-    frame: number,
-    assets: Assets | null,
-  ) {
-    if (b.kind === "laser" || b.kind === "scatter") {
-      const sp = Math.hypot(b.vx, b.vy) || 1;
-      const ux = b.vx / sp;
-      const uy = b.vy / sp;
-      const player = b.friendly;
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      for (let i = 1; i <= 5; i++) {
-        const t = i * 16;
-        ctx.beginPath();
-        ctx.ellipse(b.x - ux * t, b.y - uy * t, player ? 5 : 4, player ? 14 : 10, b.rot, 0, Math.PI * 2);
-        ctx.fillStyle = player ? `rgba(60,230,255,${0.42 - i * 0.07})` : `rgba(255,60,80,${0.38 - i * 0.06})`;
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-    ctx.save();
-    ctx.translate(b.x, b.y);
-    ctx.rotate(b.rot);
-
-    const bolt = (w: number, h: number) => {
-      ctx.beginPath();
-      ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
-    };
-
-    if (b.kind === "laser" || b.kind === "scatter") {
-      const player = b.friendly;
-      const h = player ? 62 : 44;
-      const w = player ? 16 : 12;
-      const glow = player ? "rgba(40,220,255," : "rgba(255,50,70,";
-      ctx.fillStyle = "rgba(0,0,0,0.85)";
-      bolt(w + 12, h + 16);
-      ctx.fill();
-      ctx.fillStyle = player ? "#062430" : "#2a060c";
-      bolt(w + 8, h + 8);
-      ctx.fill();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = glow + "0.28)";
-      bolt(w + 18, h * 0.7);
-      ctx.fill();
-      ctx.fillStyle = glow + "0.55)";
-      bolt(w + 6, h + 20);
-      ctx.fill();
-      ctx.fillStyle = player ? "#3cf0ff" : "#ff4d5e";
-      bolt(w, h);
-      ctx.fill();
-      ctx.fillStyle = player ? "#e9ffff" : "#ffd4d8";
-      bolt(w * 0.52, h * 0.82);
-      ctx.fill();
-      ctx.fillStyle = "#ffffff";
-      bolt(w * 0.22, h * 0.62);
-      ctx.fill();
-    } else if (b.kind === "rocket") {
-      ctx.fillStyle = "rgba(0,0,0,0.5)";
-      bolt(22, 38);
-      ctx.fill();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = "rgba(255,120,30,0.7)";
-      bolt(14, 46);
-      ctx.fill();
-      ctx.fillStyle = "rgba(255,240,180,0.9)";
-      bolt(6, 22);
-      ctx.fill();
-      ctx.globalCompositeOperation = "source-over";
-      if (assets?.rocket) drawSheet(ctx, assets.rocket, frame, 0, 0, 20, 34, 0);
-    } else if (b.kind === "bombshot") {
-      const r = 13;
-      ctx.beginPath();
-      ctx.arc(0, 0, r + 6, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(0,0,0,0.5)";
-      ctx.fill();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.beginPath();
-      ctx.arc(0, 0, r + 4, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,70,20,0.55)";
-      ctx.fill();
-      ctx.globalCompositeOperation = "source-over";
-      if (assets?.bomb) drawSheet(ctx, assets.bomb, frame, 0, 0, 24, 24);
-    } else {
-      const r = b.kind === "heavy" ? 14 : 10;
-      ctx.beginPath();
-      ctx.arc(0, 0, r + 5, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(0,0,0,0.55)";
-      ctx.fill();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.beginPath();
-      ctx.arc(0, 0, r + 3, 0, Math.PI * 2);
-      ctx.fillStyle = b.friendly ? "rgba(80,220,255,0.7)" : "rgba(255,70,90,0.75)";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(0, 0, r, 0, Math.PI * 2);
-      ctx.fillStyle = b.friendly ? "#b8f4ff" : "#ffb08a";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(0, 0, r * 0.42, 0, Math.PI * 2);
-      ctx.fillStyle = "#fff";
-      ctx.fill();
-    }
-    ctx.restore();
-  }
   private draw() {
     const ctx = this.ctx;
     const { cssW, cssH, scale } = this.view;
@@ -1288,8 +1182,29 @@ export class Game {
       }
     }
     for (const b of this.bullets) {
-      if (!b.alive) continue;
-      this.drawShot(ctx, b, frame, assets);
+      if (!b.alive || !assets) continue;
+      if ((b.kind === "laser" || b.kind === "scatter") && b.friendly) {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        drawSheet(ctx, assets.laser, frame, b.x, b.y, 14, 34, b.rot);
+        ctx.restore();
+        drawSheet(ctx, assets.laser, frame, b.x, b.y, 13, 32, b.rot);
+      } else if (b.kind === "laser" || b.kind === "scatter")
+        drawSheet(ctx, assets.laser, frame, b.x, b.y, 10, 28, b.rot);
+      else if (b.kind === "rocket")
+        drawSheet(ctx, assets.rocket, frame, b.x, b.y, 18, 32, b.rot);
+      else if (b.kind === "bombshot")
+        drawSheet(ctx, assets.bomb, frame, b.x, b.y, 22, 22);
+      else
+        drawSheet(
+          ctx,
+          assets.orb,
+          frame,
+          b.x,
+          b.y,
+          b.kind === "heavy" ? 22 : 16,
+          b.kind === "heavy" ? 22 : 16,
+        );
     }
     if (assets && (this.mode === "playing" || this.mode === "paused")) {
       const p = this.player;

@@ -1183,13 +1183,7 @@ export class Game {
     }
     for (const b of this.bullets) {
       if (!b.alive || !assets) continue;
-      if ((b.kind === "laser" || b.kind === "scatter") && b.friendly) {
-        ctx.save();
-        ctx.globalCompositeOperation = "lighter";
-        drawSheet(ctx, assets.laser, frame, b.x, b.y, 14, 34, b.rot);
-        ctx.restore();
-        drawSheet(ctx, assets.laser, frame, b.x, b.y, 13, 32, b.rot);
-      } else if (b.kind === "laser" || b.kind === "scatter")
+      if (b.kind === "laser" || b.kind === "scatter")
         drawSheet(ctx, assets.laser, frame, b.x, b.y, 10, 28, b.rot);
       else if (b.kind === "rocket")
         drawSheet(ctx, assets.rocket, frame, b.x, b.y, 18, 32, b.rot);
